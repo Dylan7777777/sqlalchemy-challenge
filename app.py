@@ -125,16 +125,15 @@ def tobs():
 def get_start_date(start):
     session = Session(engine)
 
-    minavgmax = session.query((Measurement.date),func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
-        filter(Measurement.date >= start).group_by(Measurement.date).all()
+    minavgmax = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
+        filter(Measurement.date >= start).all()
     session.close()
 
     #Creating a dictionary from the row data and appending to a dynamic list of tobs values given start date
 
     tobsfromstart = []
-    for date,min,avg,max in minavgmax:
+    for min,avg,max in minavgmax:
         tobs_dict = {}
-        tobs_dict["Date"] = date
         tobs_dict["Min"]= min
         tobs_dict["Avg"]= avg
         tobs_dict["Max"]= max
@@ -148,16 +147,15 @@ def get_start_end_date(start,end):
     session = Session(engine)
 
     #select date, min(tobs),avg(tobs),max(tobs) from measurement group by date where date > start and date < end
-    minavgmaxstend = session.query((Measurement.date),func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
-        group_by(Measurement.date).filter(Measurement.date >= start).filter(Measurement.date <= end).all()
+    minavgmaxstend = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
+        filter(Measurement.date >= start).filter(Measurement.date <= end).all()
     session.close()
 
     #Creating a dictionary from the row data and appending to a dynamic list of tobs values given start date and end date
 
     tobsfromstartend = []
-    for date,min,avg,max in minavgmaxstend:
+    for min,avg,max in minavgmaxstend:
         tobs_dict = {}
-        tobs_dict["Date"] = date
         tobs_dict["Min"]= min
         tobs_dict["Avg"]= avg
         tobs_dict["Max"]= max
